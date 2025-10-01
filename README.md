@@ -7,3 +7,6 @@ https://basescan.org/address/0xe92af969eda2739d3892bd331912924203914649#code
 
 SimpleTimer: 0xC17803c254831208B8a9c352a1B9e1b0c5d8e0e3
 https://basescan.org/address/0xc17803c254831208b8a9c352a1b9e1b0c5d8e0e3#code
+
+GiveawayBox: 0x4Ed8afadBFb646be20B250574c5b088Aeed70E1c
+https://basescan.org/address/0x4ed8afadbfb646be20b250574c5b088aeed70e1c#code
