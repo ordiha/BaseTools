@@ -10,3 +10,6 @@ https://basescan.org/address/0xc17803c254831208b8a9c352a1b9e1b0c5d8e0e3#code
 
 GiveawayBox: 0x4Ed8afadBFb646be20B250574c5b088Aeed70E1c
 https://basescan.org/address/0x4ed8afadbfb646be20b250574c5b088aeed70e1c#code
+
+StorageUnit: 0xbB5f6aB56147c3644A481FDC21196ca4A2EEe60D
+https://basescan.org/address/0xbb5f6ab56147c3644a481fdc21196ca4a2eee60d#code
