@@ -1,60 +1,156 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BaseTools — WalletConnect-ready</title>
-
-<!-- Ethers.js -->
-<script src="https://unpkg.com/ethers@5.7.2/dist/ethers.umd.min.js"></script>
-<!-- Web3Modal v2 UMD -->
-<script src="https://unpkg.com/@web3modal/standalone@2.6.2/dist/index.umd.js"></script>
-
-<style>
-  body{font-family:sans-serif;background:#0f172a;color:#fff;margin:0;padding:20px}
-  .btn{padding:8px 12px;background:#ffd166;border:none;border-radius:6px;cursor:pointer}
-  .addr{font-family:monospace;font-size:13px}
-  .status{font-size:13px;margin-top:6px;color:#9f9}
-</style>
+  <meta charset="UTF-8">
+  <title>BaseTools — WalletConnect Ready</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 0; }
+    header { background: #0052ff; color: #fff; padding: 1rem; text-align: center; }
+    h1 { margin: 0; font-size: 1.5rem; }
+    #app { padding: 2rem; max-width: 900px; margin: auto; }
+    button { padding: 0.7rem 1.2rem; margin: 0.5rem 0; font-size: 1rem; border: none; border-radius: 6px; cursor: pointer; background: #0052ff; color: white; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+    .contract { background: #fff; padding: 1rem; margin: 1rem 0; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .address { font-family: monospace; font-size: 0.9rem; color: #333; }
+    footer { text-align: center; padding: 1rem; font-size: 0.8rem; color: #777; }
+  </style>
+  <!-- WalletConnect + Web3Modal scripts -->
+  <script src="https://unpkg.com/@walletconnect/ethereum-provider@2.11.1/dist/index.umd.js"></script>
+  <script src="https://unpkg.com/@web3modal/standalone@2.6.1/dist/index.umd.js"></script>
 </head>
 <body>
-  <h1>BaseTools — WalletConnect-ready</h1>
-  <p>Project ID: <b>ab89fbce996fcfa27b2c5b16fb73632f</b></p>
-  <button id="btnConnect" class="btn">🔗 Connect Wallet</button>
-  <div id="addr" class="addr">Not connected</div>
-  <div id="status" class="status"></div>
+  <header>
+    <h1>BaseTools — WalletConnect Ready</h1>
+  </header>
 
-<script>
-const PROJECT_ID = "ab89fbce996fcfa27b2c5b16fb73632f";
+  <div id="app">
+    <p><strong>Project ID:</strong> ab89fbce996fcfa27b2c5b16fb73632f</p>
+    <p><strong>Status:</strong> <span id="status">Not connected</span></p>
+    <button id="connectBtn">🔗 Connect Wallet</button>
 
-let web3Modal, provider, ethersProvider, signer, account;
+    <h2>Contracts</h2>
 
-async function initWeb3Modal(){
-  web3Modal = new window.Web3Modal({
-    projectId: PROJECT_ID,
-    walletConnectVersion: 2,
-    chains: [{ chainId: 8453, name:"Base", rpcUrl:"https://mainnet.base.org" }],
-    metadata: {
-      name:"BaseTools",
-      description:"BaseTools dapp",
-      url:location.origin
-    }
-  });
-}
+    <div class="contract">
+      <h3>TipJar</h3>
+      <p class="address">0xc1EFbf01F45E2291930ca1b4cFEE7ba7cA2a0389</p>
+      <a target="_blank" href="https://basescan.org/address/0xc1efbf01f45e2291930ca1b4cfee7ba7ca2a0389#code">View on BaseScan</a>
+    </div>
 
-document.getElementById('btnConnect').onclick = async () => {
-  try {
-    if (!web3Modal) await initWeb3Modal();
-    provider = await web3Modal.connect();
-    ethersProvider = new ethers.providers.Web3Provider(provider);
-    signer = ethersProvider.getSigner();
-    account = await signer.getAddress();
-    document.getElementById('addr').innerText = account;
-    document.getElementById('status').innerText = "Connected ✅";
-  } catch(err){
-    document.getElementById('status').innerText = "Connection failed: " + (err.message||err);
-  }
-};
-</script>
+    <div class="contract">
+      <h3>VotePoll</h3>
+      <p class="address">0xE92Af969Eda2739d3892bD331912924203914649</p>
+      <a target="_blank" href="https://basescan.org/address/0xe92af969eda2739d3892bd331912924203914649#code">View on BaseScan</a>
+    </div>
+
+    <div class="contract">
+      <h3>SimpleTimer</h3>
+      <p class="address">0xC17803c254831208B8a9c352a1B9e1b0c5d8e0e3</p>
+      <a target="_blank" href="https://basescan.org/address/0xc17803c254831208b8a9c352a1b9e1b0c5d8e0e3#code">View on BaseScan</a>
+    </div>
+
+    <div class="contract">
+      <h3>GiveawayBox</h3>
+      <p class="address">0x4Ed8afadBFb646be20B250574c5b088Aeed70E1c</p>
+      <a target="_blank" href="https://basescan.org/address/0x4ed8afadbfb646be20b250574c5b088aeed70e1c#code">View on BaseScan</a>
+    </div>
+
+    <div class="contract">
+      <h3>StorageUnit</h3>
+      <p class="address">0xbB5f6aB56147c3644A481FDC21196ca4A2EEe60D</p>
+      <a target="_blank" href="https://basescan.org/address/0xbb5f6ab56147c3644a481fdc21196ca4a2eee60d#code">View on BaseScan</a>
+    </div>
+
+    <div class="contract">
+      <h3>RandomPicker</h3>
+      <p class="address">0x9aDF3D4233A75cc330909aDC9b1A60bFC1567567</p>
+      <a target="_blank" href="https://basescan.org/address/0x9adf3d4233a75cc330909adc9b1a60bfc1567567#code">View on BaseScan</a>
+    </div>
+
+    <div class="contract">
+      <h3>GreetingCard</h3>
+      <p class="address">0xa27C3d38BCd9738eecA4f44E7259f1Ad9E605387</p>
+      <a target="_blank" href="https://basescan.org/address/0xa27c3d38bcd9738eeca4f44e7259f1ad9e605387#code">View on BaseScan</a>
+    </div>
+
+    <div class="contract">
+      <h3>TokenTracker</h3>
+      <p class="address">0xF717E1c9fca1d3BD1823907eF120dc7a619445a1</p>
+      <a target="_blank" href="https://basescan.org/address/0xf717e1c9fca1d3bd1823907ef120dc7a619445a1#code">View on BaseScan</a>
+    </div>
+
+    <div class="contract">
+      <h3>EventTracker</h3>
+      <p class="address">0x70205809e4a0153A1a7fE165F24f83d32bd5DB3b</p>
+      <a target="_blank" href="https://basescan.org/address/0x70205809e4a0153a1a7fe165f24f83d32bd5db3b#code">View on BaseScan</a>
+    </div>
+
+    <div class="contract">
+      <h3>PriceChecker</h3>
+      <p class="address">0x27c8D16d8Eba789eDB777A983e307D726bEC56fA</p>
+      <a target="_blank" href="https://basescan.org/address/0x27c8d16d8eba789edb777a983e307d726bec56fa#code">View on BaseScan</a>
+    </div>
+
+    <div class="contract">
+      <h3>TodoList</h3>
+      <p class="address">0xD080Ebc9b6207A5B6607690E5A98aA81A0F7774a</p>
+      <a target="_blank" href="https://basescan.org/address/0xd080ebc9b6207a5b6607690e5a98aa81a0f7774a#code">View on BaseScan</a>
+    </div>
+
+    <div class="contract">
+      <h3>Scoreboard</h3>
+      <p class="address">0x3749c8E42c7D7A2E856Ab2272bd5DD0dCD530036</p>
+      <a target="_blank" href="https://basescan.org/address/0x3749c8e42c7d7a2e856ab2272bd5dd0dcd530036#code">View on BaseScan</a>
+    </div>
+
+    <div class="contract">
+      <h3>ProfileBadge</h3>
+      <p class="address">0xE22fAEdE533f9b2d321B36f9a6CaAe91404A83ff</p>
+      <a target="_blank" href="https://basescan.org/address/0xe22faede533f9b2d321b36f9a6caae91404a83ff#code">View on BaseScan</a>
+    </div>
+
+    <div class="contract">
+      <h3>PollResultsViewer</h3>
+      <p class="address">0x5C0774903cD49e8a145E2A3900965cb4684C1C7C</p>
+      <a target="_blank" href="https://basescan.org/address/0x5c0774903cd49e8a145e2a3900965cb4684c1c7c#code">View on BaseScan</a>
+    </div>
+
+    <div class="contract">
+      <h3>EventReminder</h3>
+      <p class="address">0x707d306210a414cfd63edcfe0fa11f2b37823b3e</p>
+      <a target="_blank" href="https://basescan.org/address/0x707d306210a414cfd63edcfe0fa11f2b37823b3e#code">View on BaseScan</a>
+    </div>
+
+    <div class="contract">
+      <h3>FeedbackCollector</h3>
+      <p class="address">0x57541598FD78DC06B9aDF135467fCDD103643262</p>
+      <a target="_blank" href="https://basescan.org/address/0x57541598fd78dc06b9adf135467fcdd103643262#code">View on BaseScan</a>
+    </div>
+  </div>
+
+  <footer>
+    BaseTools • WalletConnect v2 integration • Base chain 8453
+  </footer>
+
+  <script>
+    const projectId = "ab89fbce996fcfa27b2c5b16fb73632f";
+    const provider = window.WalletConnectEthereumProvider.default({
+      projectId,
+      chains: [8453]
+    });
+    const connectBtn = document.getElementById("connectBtn");
+    const statusEl = document.getElementById("status");
+
+    connectBtn.addEventListener("click", async () => {
+      try {
+        await provider.enable();
+        const accounts = await provider.request({ method: "eth_accounts" });
+        statusEl.textContent = "Connected: " + accounts[0];
+      } catch (err) {
+        statusEl.textContent = "Connection failed";
+        console.error(err);
+      }
+    });
+  </script>
 </body>
 </html>
