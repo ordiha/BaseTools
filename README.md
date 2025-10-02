@@ -28,3 +28,21 @@ https://basescan.org/address/0x70205809e4a0153a1a7fe165f24f83d32bd5db3b#code
 
 PriceCheckerid: 0x27c8D16d8Eba789eDB777A983e307D726bEC56fA
 https://basescan.org/address/0x27c8d16d8eba789edb777a983e307d726bec56fa#code
+
+TodoList: 0xD080Ebc9b6207A5B6607690E5A98aA81A0F7774a
+https://basescan.org/address/0xd080ebc9b6207a5b6607690e5a98aa81a0f7774a#code
+
+Scoreboard: 0x3749c8E42c7D7A2E856Ab2272bd5DD0dCD530036
+https://basescan.org/address/0x3749c8e42c7d7a2e856ab2272bd5dd0dcd530036#code
+
+ProfileBadge: 0xE22fAEdE533f9b2d321B36f9a6CaAe91404A83ff
+https://basescan.org/address/0xe22faede533f9b2d321b36f9a6caae91404a83ff#code
+
+PollResultsViewer: 0x5C0774903cD49e8a145E2A3900965cb4684C1C7C
+https://basescan.org/address/0x5c0774903cd49e8a145e2a3900965cb4684c1c7c#code
+
+EventReminder: EventReminder
+https://basescan.org/address/0x707d306210a414cfd63edcfe0fa11f2b37823b3e#code
+
+FeedbackCollector: 0x57541598FD78DC06B9aDF135467fCDD103643262
+https://basescan.org/address/0x57541598fd78dc06b9adf135467fcdd103643262#code
