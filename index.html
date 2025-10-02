@@ -1,265 +1,424 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BaseTools - WalletConnect Builder Rewards</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      background: #f0f2f5;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      max-width: 600px;
-      width: 100%;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      background: #4CAF50;
-      border: none;
-      border-radius: 5px;
-      color: white;
-      margin: 5px;
-    }
-    button:hover { background: #45a049; }
-    input, select {
-      padding: 10px;
-      font-size: 14px;
-      margin: 5px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    .section { margin: 10px 0; display: none; }
-    .section.active { display: block; }
-    #status { margin-top: 10px; font-size: 14px; color: #333; word-wrap: break-word; }
-    h2 { font-size: 20px; margin: 10px 0; }
-    h3 { font-size: 16px; margin: 10px 0 5px; }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>BaseTools — WalletConnect-ready</title>
+
+<!-- Ethers (UMD) -->
+<script src="https://unpkg.com/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+<!-- Web3Modal v2 (UMD) -->
+<script src="https://unpkg.com/@walletconnect/web3modal@2.6.2/dist/index.umd.js"></script>
+
+<style>
+  :root{
+    --bg1:#0f172a; --bg2:#06273b; --card: rgba(255,255,255,0.04);
+    --accent:#ffd166; --muted: rgba(255,255,255,0.75);
+  }
+  html,body{height:100%; margin:0; font-family: Inter, system-ui, -apple-system, Arial; background: linear-gradient(135deg,var(--bg1),var(--bg2)); color:#fff;}
+  .wrap{max-width:1100px;margin:28px auto;padding:18px;}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  h1{margin:0;font-size:1.4rem;color:var(--accent)}
+  .top-right{display:flex;gap:10px;align-items:center}
+  .btn{background:var(--accent);border:none;color:#061219;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600}
+  .addr{font-family:monospace;background:rgba(0,0,0,0.18);padding:6px 10px;border-radius:8px;color:var(--muted)}
+  .chain{font-size:13px; color:var(--muted)}
+  .metrics{font-size:13px;color:var(--muted)}
+  main.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:18px}
+  .card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.25)}
+  .card h3{margin:0 0 8px 0;color:var(--accent)}
+  .small{font-size:13px;color:var(--muted);margin-bottom:8px}
+  .fn-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+  input[type=text], input[type=number] {padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.15);color:#fff;min-width:120px}
+  .call-btn{background:#2dd4bf;border:none;padding:6px 10px;border-radius:8px;cursor:pointer}
+  .view-btn{background:#60a5fa}
+  .status{font-size:13px;color:#cfe;word-break:break-all}
+  a.link{color:var(--muted);font-size:13px;text-decoration:underline}
+  footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+  .notice{background:rgba(255,255,255,0.03);padding:8px;border-radius:8px;margin-top:10px;color:var(--muted)}
+</style>
 </head>
 <body>
-  <div class="container">
-    <h2>BaseTools: Utility Contracts</h2>
-    <button id="connectBtn">Connect Wallet</button>
-    <div id="connected" class="section">
-      <p>Connected Address: <span id="address"></span></p>
-      <div class="section" id="tipJar">
-        <h3>TipJar</h3>
-        <input id="tipAmount" type="number" placeholder="Tip Amount (ETH)" step="0.001">
-        <button id="sendTipBtn">Send Tip</button>
-      </div>
-      <div class="section" id="votePoll">
-        <h3>VotePoll</h3>
-        <select id="voteOption">
-          <option value="0">Option 1</option>
-          <option value="1">Option 2</option>
-          <option value="2">Option 3</option>
-        </select>
-        <button id="voteBtn">Vote</button>
-      </div>
-      <div class="section" id="simpleTimer">
-        <h3>SimpleTimer</h3>
-        <button id="startTimerBtn">Start Timer</button>
-      </div>
-      <div class="section" id="giveawayBox">
-        <h3>GiveawayBox</h3>
-        <button id="enterGiveawayBtn">Enter Giveaway</button>
-      </div>
-      <div class="section" id="storageUnit">
-        <h3>StorageUnit</h3>
-        <input id="storeValue" type="number" placeholder="Value to Store">
-        <button id="storeBtn">Store Value</button>
-      </div>
-      <div class="section" id="randomPicker">
-        <h3>RandomPicker</h3>
-        <button id="enterRandomBtn">Enter Random Draw</button>
-      </div>
-      <div class="section" id="greetingCard">
-        <h3>GreetingCard</h3>
-        <input id="greetingMessage" type="text" placeholder="Enter Greeting">
-        <button id="setGreetingBtn">Set Greeting</button>
-      </div>
-      <div class="section" id="tokenTracker">
-        <h3>TokenTracker</h3>
-        <input id="tokenAmount" type="number" placeholder="Token Amount">
-        <button id="updateTokenBtn">Update Balance</button>
-      </div>
-      <div class="section" id="eventTracker">
-        <h3>EventTracker</h3>
-        <input id="eventName" type="text" placeholder="Event Name">
-        <button id="logEventBtn">Log Event</button>
-      </div>
-      <div class="section" id="priceChecker">
-        <h3>PriceChecker</h3>
-        <input id="priceValue" type="number" placeholder="Price in Wei">
-        <button id="updatePriceBtn">Update Price</button>
-      </div>
-      <div class="section" id="todoList">
-        <h3>TodoList</h3>
-        <input id="taskDescription" type="text" placeholder="Task Description">
-        <button id="addTaskBtn">Add Task</button>
-      </div>
-      <div class="section" id="scoreboard">
-        <h3>Scoreboard</h3>
-        <input id="scoreValue" type="number" placeholder="Score">
-        <button id="updateScoreBtn">Update Score</button>
-      </div>
-      <div class="section" id="profileBadge">
-        <h3>ProfileBadge</h3>
-        <input id="badgeName" type="text" placeholder="Badge Name">
-        <button id="assignBadgeBtn">Assign Badge</button>
-      </div>
-      <div class="section" id="pollResultsViewer">
-        <h3>PollResultsViewer</h3>
-        <input id="pollOption" type="number" placeholder="Option Number">
-        <input id="pollCount" type="number" placeholder="Vote Count">
-        <button id="updatePollResultBtn">Update Result</button>
-      </div>
-      <div class="section" id="eventReminder">
-        <h3>EventReminder</h3>
-        <input id="reminderName" type="text" placeholder="Event Name">
-        <input id="reminderTimestamp" type="number" placeholder="Timestamp">
-        <button id="setReminderBtn">Set Reminder</button>
-      </div>
-      <div class="section" id="feedbackCollector">
-        <h3>FeedbackCollector</h3>
-        <input id="feedbackMessage" type="text" placeholder="Feedback">
-        <button id="submitFeedbackBtn">Submit Feedback</button>
-      </div>
-      <div id="status"></div>
+<div class="wrap">
+  <header>
+    <h1>BaseTools — WalletConnect-ready</h1>
+    <div class="top-right">
+      <div class="metrics" id="wcMetric">WC sessions: 0</div>
+      <div id="chain" class="chain">Not connected</div>
+      <div id="addr" class="addr">Not connected</div>
+      <button id="btnConnect" class="btn">🔗 Connect Wallet</button>
     </div>
-  </div>
-  <script type="module">
-    import { createAppKit } from 'https://unpkg.com/@reown/appkit@1.7.7';
-    import { base } from 'https://unpkg.com/@reown/appkit/networks';
-    import { ethers } from 'https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js';
+  </header>
 
-    window.ethers = ethers;
-    const projectId = 'ab89fbce996fcfa27b2c5b16fb73632f';
-    const statusDiv = document.getElementById('status');
+  <p class="notice">Project ID (WalletConnect v2): <strong>ab89fbce996fcfa27b2c5b16fb73632f</strong> — Base chain supported (8453). Use the Connect button to open WalletConnect modal (QR / injected extension).</p>
 
-    const contracts = {
-      TipJar: { address: '0xc1EFbf01F45E2291930ca1b4cFEE7ba7cA2a0389', abi: ['function tip() public payable'] },
-      VotePoll: { address: '0xE92Af969Eda2739d3892bD331912924203914649', abi: ['function vote(uint256 option) public'] },
-      SimpleTimer: { address: '0xC17803c254831208B8a9c352a1B9e1b0c5d8e0e3', abi: ['function startTimer() public'] },
-      GiveawayBox: { address: '0x4Ed8afadBFb646be20B250574c5b088Aeed70E1c', abi: ['function enter() public'] },
-      StorageUnit: { address: '0xbB5f6aB56147c3644A481FDC21196ca4A2EEe60D', abi: ['function store(uint256 value) public'] },
-      RandomPicker: { address: '0x9aDF3D4233A75cc330909aDC9b1A60bFC1567567', abi: ['function enter() public'] },
-      GreetingCard: { address: '0xa27C3d38BCd9738eecA4f44E7259f1Ad9E605387', abi: ['function setGreeting(string memory message) public'] },
-      TokenTracker: { address: '0xF717E1c9fca1d3BD1823907eF120dc7a619445a1', abi: ['function updateBalance(address user, uint256 amount) public'] },
-      EventTracker: { address: '0x70205809e4a0153A1a7fE165F24f83d32bd5DB3b', abi: ['function logEvent(string memory name) public'] },
-      PriceChecker: { address: '0x27c8D16d8Eba789eDB777A983e307D726bEC56fA', abi: ['function updatePrice(uint256 newPrice) public'] },
-      TodoList: { address: '0xD080Ebc9b6207A5B6607690E5A98aA81A0F7774a', abi: ['function addTask(string memory description) public'] },
-      Scoreboard: { address: '0x3749c8E42c7D7A2E856Ab2272bd5DD0dCD530036', abi: ['function updateScore(uint256 score) public'] },
-      ProfileBadge: { address: '0xE22fAEdE533f9b2d321B36f9a6CaAe91404A83ff', abi: ['function assignBadge(string memory badge) public'] },
-      PollResultsViewer: { address: '0x5C0774903cD49e8a145E2A3900965cb4684C1C7C', abi: ['function updateResult(uint256 option, uint256 count) public'] },
-      EventReminder: { address: '0x707d306210a414cFD63EdcFe0fA11f2b37823b3e', abi: ['function setReminder(string memory eventName, uint256 timestamp) public'] },
-      FeedbackCollector: { address: '0x57541598FD78DC06B9aDF135467fCDD103643262', abi: ['function submitFeedback(string memory message) public'] }
-    };
+  <main class="grid" id="contracts"></main>
 
-    let appKit;
+  <footer>
+    Repo: <code>BaseTools</code> • Replace this file and commit with the message in README / instructions.
+  </footer>
+</div>
+
+<script>
+/*
+  Single-file dApp UI:
+  - Uses Web3Modal v2 + WalletConnect (projectId provided)
+  - Ethers.js used for calls and txs
+  - Contracts (addresses + minimal ABIs) are included below (from your list)
+  - Replace file in repo root: index.html
+  - Commit message: Update index.html — add WalletConnect v2 (projectId: ab89fbce...) + BaseTools UI
+*/
+
+const PROJECT_ID = "ab89fbce996fcfa27b2c5b16fb73632f";
+const CHAINS = [{ chainId: 8453, rpcUrl: "https://mainnet.base.org", name: "Base" }];
+
+const contracts = {
+  TipJar: {
+    address: "0xc1EFbf01F45E2291930ca1b4cFEE7ba7cA2a0389",
+    baseScan: "https://basescan.org/address/0xc1efbf01f45e2291930ca1b4cfee7ba7ca2a0389#code",
+    abi: [
+      { "inputs": [], "name": "tip", "stateMutability": "payable", "type": "function" },
+      { "inputs": [], "name": "totalTips", "outputs": [{"internalType":"uint256","name":"","type":"uint256"}], "stateMutability": "view", "type": "function" }
+    ]
+  },
+  VotePoll: {
+    address: "0xE92Af969Eda2739d3892bD331912924203914649",
+    baseScan: "https://basescan.org/address/0xe92af969eda2739d3892bd331912924203914649#code",
+    abi: [
+      { "inputs": [{"internalType":"bool","name":"_yes","type":"bool"}], "name": "vote", "stateMutability": "nonpayable", "type":"function" },
+      { "inputs": [], "name": "getResults", "outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}], "stateMutability":"view","type":"function" }
+    ]
+  },
+  SimpleTimer: {
+    address: "0xC17803c254831208B8a9c352a1B9e1b0c5d8e0e3",
+    baseScan: "https://basescan.org/address/0xc17803c254831208b8a9c352a1b9e1b0c5d8e0e3#code",
+    abi: [
+      { "inputs": [], "name": "resetTimer", "stateMutability": "nonpayable", "type":"function" },
+      { "inputs": [], "name": "getTimeLeft", "outputs":[{"internalType":"uint256","name":"","type":"uint256"}], "stateMutability":"view","type":"function" }
+    ]
+  },
+  GiveawayBox: {
+    address: "0x4Ed8afadBFb646be20B250574c5b088Aeed70E1c",
+    baseScan: "https://basescan.org/address/0x4ed8afadbfb646be20b250574c5b088aeed70e1c#code",
+    abi: [
+      { "inputs": [], "name": "claim", "stateMutability": "nonpayable", "type":"function" },
+      { "inputs": [], "name": "claimAmount", "outputs":[{"internalType":"uint256","name":"","type":"uint256"}], "stateMutability":"view","type":"function" }
+    ]
+  },
+  StorageUnit: {
+    address: "0xbB5f6aB56147c3644A481FDC21196ca4A2EEe60D",
+    baseScan: "https://basescan.org/address/0xbb5f6ab56147c3644a481fdc21196ca4a2eee60d#code",
+    abi: [
+      { "inputs":[{"internalType":"string","name":"_data","type":"string"}],"name":"store","stateMutability":"nonpayable","type":"function" },
+      { "inputs":[],"name":"getData","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function" }
+    ]
+  },
+  RandomPicker: {
+    address: "0x9aDF3D4233A75cc330909aDC9b1A60bFC1567567",
+    baseScan: "https://basescan.org/address/0x9adf3d4233a75cc330909adc9b1a60bfc1567567#code",
+    abi: [
+      { "inputs": [], "name": "pickRandom", "outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function" }
+    ]
+  },
+  GreetingCard: {
+    address: "0xa27C3d38BCd9738eecA4f44E7259f1Ad9E605387",
+    baseScan: "https://basescan.org/address/0xa27c3d38bcd9738eeca4f44e7259f1ad9e605387#code",
+    abi: [
+      { "inputs":[{"internalType":"string","name":"_greeting","type":"string"}],"name":"sendGreeting","stateMutability":"nonpayable","type":"function"},
+      { "inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"getGreeting","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"}
+    ]
+  },
+  TokenTracker: {
+    address: "0xF717E1c9fca1d3BD1823907eF120dc7a619445a1",
+    baseScan: "https://basescan.org/address/0xf717e1c9fca1d3bd1823907ef120dc7a619445a1#code",
+    abi: [
+      { "inputs":[{"internalType":"address","name":"_token","type":"address"}],"name":"trackToken","stateMutability":"nonpayable","type":"function"},
+      { "inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}
+    ]
+  },
+  EventTracker: {
+    address: "0x70205809e4a0153A1a7fE165F24f83d32bd5DB3b",
+    baseScan: "https://basescan.org/address/0x70205809e4a0153a1a7fe165f24f83d32bd5db3b#code",
+    abi: [
+      { "inputs":[{"internalType":"uint256","name":"_eventId","type":"uint256"}],"name":"trackEvent","stateMutability":"nonpayable","type":"function"},
+      { "inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"getEvent","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"}
+    ]
+  },
+  PriceChecker: {
+    address: "0x27c8D16d8Eba789eDB777A983e307D726bEC56fA",
+    baseScan: "https://basescan.org/address/0x27c8d16d8eba789edb777a983e307d726bec56fa#code",
+    abi: [
+      { "inputs": [], "name":"checkPrice", "outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}
+    ]
+  },
+  TodoList: {
+    address: "0xD080Ebc9b6207A5B6607690E5A98aA81A0F7774a",
+    baseScan: "https://basescan.org/address/0xd080ebc9b6207a5b6607690e5a98aa81a0f7774a#code",
+    abi: [
+      { "inputs":[{"internalType":"string","name":"_task","type":"string"}],"name":"addTask","stateMutability":"nonpayable","type":"function"},
+      { "inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"getTask","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"}
+    ]
+  },
+  Scoreboard: {
+    address: "0x3749c8E42c7D7A2E856Ab2272bd5DD0dCD530036",
+    baseScan: "https://basescan.org/address/0x3749c8e42c7d7a2e856ab2272bd5dd0dcd530036#code",
+    abi: [
+      { "inputs": [], "name":"addScore","stateMutability":"nonpayable","type":"function"},
+      { "inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getScore","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}
+    ]
+  },
+  ProfileBadge: {
+    address: "0xE22fAEdE533f9b2d321B36f9a6CaAe91404A83ff",
+    baseScan: "https://basescan.org/address/0xe22faede533f9b2d321b36f9a6caae91404a83ff#code",
+    abi: [
+      { "inputs": [], "name":"claimBadge","stateMutability":"nonpayable","type":"function"},
+      { "inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getBadgeStatus","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"}
+    ]
+  },
+  PollResultsViewer: {
+    address: "0x5C0774903cD49e8a145E2A3900965cb4684C1C7C",
+    baseScan: "https://basescan.org/address/0x5c0774903cd49e8a145e2a3900965cb4684c1c7c#code",
+    abi: [
+      { "inputs":[{"internalType":"uint256","name":"_pollId","type":"uint256"}],"name":"updateResults","stateMutability":"nonpayable","type":"function"},
+      { "inputs":[{"internalType":"uint256","name":"_pollId","type":"uint256"}],"name":"getTotalVotes","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}
+    ]
+  },
+  EventReminder: {
+    address: "0x707d306210a414cfd63edcfe0fa11f2b37823b3e",
+    baseScan: "https://basescan.org/address/0x707d306210a414cfd63edcfe0fa11f2b37823b3e#code",
+    abi: [
+      { "inputs":[{"internalType":"uint256","name":"_eventId","type":"uint256"}],"name":"setReminder","stateMutability":"nonpayable","type":"function"},
+      { "inputs":[{"internalType":"uint256","name":"_eventId","type":"uint256"}],"name":"getEvent","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"}
+    ]
+  },
+  FeedbackCollector: {
+    address: "0x57541598FD78DC06B9aDF135467fCDD103643262",
+    baseScan: "https://basescan.org/address/0x57541598fd78dc06b9adf135467fcdd103643262#code",
+    abi: [
+      { "inputs":[{"internalType":"string","name":"_feedback","type":"string"}],"name":"submitFeedback","stateMutability":"nonpayable","type":"function"},
+      { "inputs":[],"name":"getFeedbackCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}
+    ]
+  }
+};
+
+// UI / state
+let web3Modal, provider, ethersProvider, signer, userAddress;
+let wcSessions = Number(localStorage.getItem('wcSessions') || 0);
+
+function renderWCMetric(){
+  document.getElementById('wcMetric').innerText = `WC sessions: ${wcSessions}`;
+  localStorage.setItem('wcSessions', wcSessions);
+}
+
+async function initWeb3Modal(){
+  // Web3Modal v2 UMD global: Web3Modal
+  web3Modal = new Web3Modal.Web3Modal({
+    projectId: PROJECT_ID,
+    walletConnectVersion: 2,
+    chains: [{ chainId: 8453 }],
+    metadata: {
+      name: "BaseTools",
+      description: "Utility suite on Base (WalletConnect campaign ready)",
+      url: location.origin
+    }
+  });
+}
+
+// Connect button handler
+document.getElementById('btnConnect').addEventListener('click', async () => {
+  try {
+    // Ensure Web3Modal initialized
+    if (!web3Modal) await initWeb3Modal();
+
+    // Open modal / connect
+    provider = await web3Modal.connect();
+
+    // Detect if WalletConnect provider used (increment metric)
     try {
-      appKit = await createAppKit({
-        projectId,
-        networks: [base],
-        metadata: {
-          name: 'BaseTools',
-          description: 'Utility contracts on Base with WalletConnect',
-          url: window.location.href,
-          icons: ['https://reown.com/favicon.ico']
-        },
-        features: { socials: ['google', 'twitter'], email: true, swap: true, onramp: true, analytics: true, paymaster: true }
-      });
-      statusDiv.textContent = 'AppKit initialized. Click Connect Wallet.';
-    } catch (err) {
-      statusDiv.textContent = `Init failed: ${err.message}. Check Project ID or network.`;
-      console.error(err);
+      if (provider?.wc || provider?.connector?.peerMeta || provider?.isWalletConnect) {
+        wcSessions++;
+      }
+    } catch(e){ /* ignore */ }
+    renderWCMetric();
+
+    // Wrap with ethers
+    ethersProvider = new ethers.providers.Web3Provider(provider);
+    signer = ethersProvider.getSigner();
+    const accounts = await ethersProvider.listAccounts();
+    userAddress = accounts && accounts[0] ? accounts[0] : null;
+
+    document.getElementById('addr').innerText = userAddress ? userAddress : 'Connected (no address)';
+    document.getElementById('chain').innerText = 'Connected (Base)';
+    // listen for disconnect
+    if (provider.on) {
+      provider.on("disconnect", () => { disconnect(); });
+      provider.on("accountsChanged", (accs) => { userAddress = accs[0]; document.getElementById('addr').innerText = userAddress || 'Not connected'; });
+      provider.on("chainChanged", (chainId) => { document.getElementById('chain').innerText = `Chain ${chainId}`; });
     }
 
-    const connectBtn = document.getElementById('connectBtn');
-    const connectedDiv = document.getElementById('connected');
-    const addressSpan = document.getElementById('address');
+    renderContractsUI();
+  } catch (err) {
+    console.error("Connection failed:", err);
+    alert("Connection failed: " + (err?.message || err));
+  }
+});
 
-    connectBtn.addEventListener('click', async () => {
-      try {
-        await appKit.open();
-        statusDiv.textContent = 'Opening WalletConnect modal...';
-      } catch (err) {
-        statusDiv.textContent = `Connection failed: ${err.message}. Check wallet/network.`;
-        console.error(err);
+function disconnect(){
+  try {
+    if(provider?.disconnect) provider.disconnect();
+  } catch(e){}
+  provider = null; ethersProvider = null; signer = null; userAddress = null;
+  document.getElementById('addr').innerText = 'Not connected';
+  document.getElementById('chain').innerText = 'Not connected';
+  renderContractsUI(); // to show disabled state
+}
+
+// Build UI cards
+function renderContractsUI(){
+  const container = document.getElementById('contracts');
+  container.innerHTML = '';
+  for (const [name, data] of Object.entries(contracts)){
+    const card = document.createElement('section');
+    card.className = 'card';
+    const title = document.createElement('h3');
+    title.innerText = name;
+    const sub = document.createElement('div');
+    sub.className = 'small';
+    sub.innerHTML = `<div>Address: <a class="link" href="${data.baseScan}" target="_blank">${data.address}</a></div>`;
+
+    card.appendChild(title);
+    card.appendChild(sub);
+
+    data.abi.forEach((fn, idx) => {
+      const row = document.createElement('div');
+      row.className = 'fn-row';
+      const fname = document.createElement('div');
+      fname.style.minWidth = '160px';
+      fname.innerText = `${fn.name}() — ${fn.stateMutability || ''}`;
+
+      // create inputs for each arg
+      const inputs = fn.inputs || [];
+      const inputEls = inputs.map(inp => {
+        const el = document.createElement('input');
+        el.placeholder = inp.name || inp.type;
+        el.type = (inp.type.includes('uint') || inp.type==='address') ? 'text' : 'text';
+        el.id = `${name}_${fn.name}_${inp.name || Math.random().toString(36).slice(2,7)}`;
+        el.style.minWidth = '120px';
+        return el;
+      });
+
+      // if payable, create value input
+      let valueInput = null;
+      if (fn.stateMutability === 'payable') {
+        valueInput = document.createElement('input');
+        valueInput.placeholder = 'value (ETH)';
+        valueInput.type = 'number'; valueInput.step = '0.00000001';
+        valueInput.id = `${name}_${fn.name}_value`;
+        valueInput.style.minWidth = '110px';
+        inputEls.push(valueInput);
       }
+
+      // create button
+      const btn = document.createElement('button');
+      btn.className = fn.stateMutability === 'view' || fn.stateMutability==='pure' ? 'call-btn view-btn' : 'call-btn';
+      btn.innerText = fn.stateMutability === 'view' || fn.stateMutability==='pure' ? 'Call (view)' : 'Send TX';
+      btn.onclick = () => callContractFn(name, idx);
+
+      const status = document.createElement('div');
+      status.className = 'status';
+      status.id = `${name}_${fn.name}_status`;
+
+      // assemble row
+      row.appendChild(fname);
+      inputEls.forEach(i=>row.appendChild(i));
+      row.appendChild(btn);
+      card.appendChild(row);
+      card.appendChild(status);
     });
 
-    appKit.on('connect', async ({ address }) => {
-      statusDiv.textContent = `Connected: ${address}`;
-      addressSpan.textContent = address;
-      connectedDiv.classList.add('active');
-      connectBtn.style.display = 'none';
-      Object.keys(contracts).forEach(key => document.getElementById(key.toLowerCase())?.classList.add('active'));
-    });
+    container.appendChild(card);
+  }
 
-    appKit.on('disconnect', () => {
-      statusDiv.textContent = 'Disconnected';
-      connectedDiv.classList.remove('active');
-      connectBtn.style.display = 'block';
-      Object.keys(contracts).forEach(key => document.getElementById(key.toLowerCase())?.classList.remove('active'));
-    });
+  // If not connected, disable buttons by overlay message
+  if (!signer) {
+    // show "Connect wallet first" on all status boxes
+    for (const [name, data] of Object.entries(contracts)) {
+      data.abi.forEach(fn => {
+        const s = document.getElementById(`${name}_${fn.name}_status`);
+        if (s) s.innerText = "Connect wallet first";
+      });
+    }
+  }
+}
 
-    const actions = [
-      { id: 'sendTipBtn', contract: 'TipJar', fn: 'tip', input: 'tipAmount', process: (input) => ({ value: ethers.utils.parseEther(input), gasLimit: 100000 }) },
-      { id: 'voteBtn', contract: 'VotePoll', fn: 'vote', input: 'voteOption', process: (input) => [parseInt(input)] },
-      { id: 'startTimerBtn', contract: 'SimpleTimer', fn: 'startTimer', input: null, process: () => [] },
-      { id: 'enterGiveawayBtn', contract: 'GiveawayBox', fn: 'enter', input: null, process: () => [] },
-      { id: 'storeBtn', contract: 'StorageUnit', fn: 'store', input: 'storeValue', process: (input) => [parseInt(input)] },
-      { id: 'enterRandomBtn', contract: 'RandomPicker', fn: 'enter', input: null, process: () => [] },
-      { id: 'setGreetingBtn', contract: 'GreetingCard', fn: 'setGreeting', input: 'greetingMessage', process: (input) => [input] },
-      { id: 'updateTokenBtn', contract: 'TokenTracker', fn: 'updateBalance', input: 'tokenAmount', process: (input, address) => [address, parseInt(input)] },
-      { id: 'logEventBtn', contract: 'EventTracker', fn: 'logEvent', input: 'eventName', process: (input) => [input] },
-      { id: 'updatePriceBtn', contract: 'PriceChecker', fn: 'updatePrice', input: 'priceValue', process: (input) => [parseInt(input)] },
-      { id: 'addTaskBtn', contract: 'TodoList', fn: 'addTask', input: 'taskDescription', process: (input) => [input] },
-      { id: 'updateScoreBtn', contract: 'Scoreboard', fn: 'updateScore', input: 'scoreValue', process: (input) => [parseInt(input)] },
-      { id: 'assignBadgeBtn', contract: 'ProfileBadge', fn: 'assignBadge', input: 'badgeName', process: (input) => [input] },
-      { id: 'updatePollResultBtn', contract: 'PollResultsViewer', fn: 'updateResult', input: ['pollOption', 'pollCount'], process: (inputs) => [parseInt(inputs[0]), parseInt(inputs[1])] },
-      { id: 'setReminderBtn', contract: 'EventReminder', fn: 'setReminder', input: ['reminderName', 'reminderTimestamp'], process: (inputs) => [inputs[0], parseInt(inputs[1])] },
-      { id: 'submitFeedbackBtn', contract: 'FeedbackCollector', fn: 'submitFeedback', input: 'feedbackMessage', process: (input) => [input] }
-    ];
-
-    actions.forEach(({ id, contract, fn, input, process }) => {
-      const btn = document.getElementById(id);
-      if (btn) {
-        btn.addEventListener('click', async () => {
-          try {
-            const provider = new ethers.providers.Web3Provider(appKit.getProvider());
-            const signer = provider.getSigner();
-            const contractObj = new ethers.Contract(contracts[contract].address, contracts[contract].abi, signer);
-            const inputValue = input ? (Array.isArray(input) ? input.map(i => document.getElementById(i).value) : document.getElementById(input).value) : null;
-            const params = input ? process(inputValue, await signer.getAddress()) : process();
-            const tx = await contractObj[fn](...params);
-            statusDiv.textContent = `Tx sent: ${tx.hash}`;
-            appKit.trackEvent({ name: `${contract}_${fn}`, properties: { address: contracts[contract].address } });
-            await tx.wait();
-            statusDiv.textContent = `Tx confirmed: ${tx.hash}`;
-          } catch (err) {
-            statusDiv.textContent = `Error: ${err.message}`;
-            console.error(err);
-          }
-        });
+async function callContractFn(contractKey, fnIndex){
+  const c = contracts[contractKey];
+  const fn = c.abi[fnIndex];
+  const statusEl = document.getElementById(`${contractKey}_${fn.name}_status`);
+  statusEl.innerText = "Working...";
+  try {
+    // Gather inputs
+    const args = [];
+    for (const inp of (fn.inputs||[])) {
+      const id = `${contractKey}_${fn.name}_${inp.name || ''}`;
+      // find element by IDs matching possible generated ones
+      const el = document.getElementById(id) || document.querySelector(`#${contractKey}_${fn.name}_` + inp.name) || document.querySelector(`[id^="${contractKey}_${fn.name}_${inp.name}"]`);
+      let val = el ? el.value : undefined;
+      // if empty for uint, use 0? better to throw
+      if ((inp.type.includes('uint') || inp.type==='address') && (val === undefined || val === '')) {
+        // if no input provided for required param -> error
+        throw new Error(`Missing input for ${inp.name || inp.type}`);
       }
-    });
-  </script>
+      if (val !== undefined) args.push(val);
+    }
+
+    // Provider readiness
+    if (!ethersProvider) throw new Error("Connect wallet first");
+
+    const isView = fn.stateMutability === 'view' || fn.stateMutability === 'pure';
+    if (isView) {
+      const readContract = new ethers.Contract(c.address, [fn], ethersProvider);
+      const res = await readContract[fn.name](...args);
+      // show result (stringify if object)
+      statusEl.innerText = (typeof res === 'object') ? JSON.stringify(res) : String(res);
+      return;
+    }
+
+    // write path
+    if (!signer) throw new Error("Connect wallet first");
+    const writeContract = new ethers.Contract(c.address, [fn], signer);
+
+    // overrides for payable
+    let overrides = {};
+    if (fn.stateMutability === 'payable') {
+      const vEl = document.getElementById(`${contractKey}_${fn.name}_value`);
+      const val = vEl && vEl.value ? vEl.value : '0';
+      overrides = { value: ethers.utils.parseEther(String(val || '0')) };
+    }
+
+    // send tx
+    const txResp = await writeContract[fn.name](...args, overrides);
+    statusEl.innerText = `Sent — waiting (tx: ${txResp.hash})`;
+    const receipt = await txResp.wait();
+    statusEl.innerText = `Tx: ${receipt.transactionHash}`;
+  } catch (err) {
+    console.error(err);
+    statusEl.innerText = `Error: ${err && err.message ? err.message : err}`;
+  }
+}
+
+// init
+(async function main(){
+  renderWCMetric();
+  await initWeb3Modal();
+  renderContractsUI();
+
+  // auto-check: if an injected wallet present, display hint in connect button (optional)
+  if (window.ethereum) {
+    document.getElementById('btnConnect').innerText = '🔗 Connect Wallet / WalletConnect';
+  }
+})();
+
+</script>
 </body>
 </html>
