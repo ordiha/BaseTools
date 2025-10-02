@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <title>BaseTools - WalletConnect Builder Rewards</title>
   <script type="module">
-    import { createAppKit } from 'https://unpkg.com/@reown/appkit@1.7.7';
-    import { base } from 'https://unpkg.com/@reown/appkit/networks';
-    import { ethers } from 'https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js';
+    const { createAppKit } = await import('https://unpkg.com/@reown/appkit@1.7.7');
+    const { base } = await import('https://unpkg.com/@reown/appkit/networks');
+    const { ethers } = await import('https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js');
     window.ethers = ethers;
     window.createAppKit = createAppKit;
     window.base = base;
@@ -79,13 +79,11 @@
     <button id="connectBtn">Connect Wallet</button>
     <div id="connected" class="section">
       <p>Connected Address: <span id="address"></span></p>
-      <!-- TipJar -->
       <div class="section" id="tipJar">
         <h3>TipJar</h3>
         <input id="tipAmount" type="number" placeholder="Tip Amount (ETH)" step="0.001">
         <button id="sendTipBtn">Send Tip</button>
       </div>
-      <!-- VotePoll -->
       <div class="section" id="votePoll">
         <h3>VotePoll</h3>
         <select id="voteOption">
@@ -95,84 +93,70 @@
         </select>
         <button id="voteBtn">Vote</button>
       </div>
-      <!-- SimpleTimer -->
       <div class="section" id="simpleTimer">
         <h3>SimpleTimer</h3>
         <button id="startTimerBtn">Start Timer</button>
       </div>
-      <!-- GiveawayBox -->
       <div class="section" id="giveawayBox">
         <h3>GiveawayBox</h3>
         <button id="enterGiveawayBtn">Enter Giveaway</button>
       </div>
-      <!-- StorageUnit -->
       <div class="section" id="storageUnit">
         <h3>StorageUnit</h3>
         <input id="storeValue" type="number" placeholder="Value to Store">
         <button id="storeBtn">Store Value</button>
       </div>
-      <!-- RandomPicker -->
       <div class="section" id="randomPicker">
         <h3>RandomPicker</h3>
         <button id="enterRandomBtn">Enter Random Draw</button>
       </div>
-      <!-- GreetingCard -->
       <div class="section" id="greetingCard">
         <h3>GreetingCard</h3>
         <input id="greetingMessage" type="text" placeholder="Enter Greeting">
         <button id="setGreetingBtn">Set Greeting</button>
       </div>
-      <!-- TokenTracker -->
       <div class="section" id="tokenTracker">
         <h3>TokenTracker</h3>
         <input id="tokenAmount" type="number" placeholder="Token Amount">
         <button id="updateTokenBtn">Update Balance</button>
       </div>
-      <!-- EventTracker -->
       <div class="section" id="eventTracker">
         <h3>EventTracker</h3>
         <input id="eventName" type="text" placeholder="Event Name">
         <button id="logEventBtn">Log Event</button>
       </div>
-      <!-- PriceChecker -->
       <div class="section" id="priceChecker">
         <h3>PriceChecker</h3>
         <input id="priceValue" type="number" placeholder="Price in Wei">
         <button id="updatePriceBtn">Update Price</button>
       </div>
-      <!-- TodoList -->
       <div class="section" id="todoList">
         <h3>TodoList</h3>
         <input id="taskDescription" type="text" placeholder="Task Description">
         <button id="addTaskBtn">Add Task</button>
       </div>
-      <!-- Scoreboard -->
       <div class="section" id="scoreboard">
         <h3>Scoreboard</h3>
         <input id="scoreValue" type="number" placeholder="Score">
         <button id="updateScoreBtn">Update Score</button>
       </div>
-      <!-- ProfileBadge -->
       <div class="section" id="profileBadge">
         <h3>ProfileBadge</h3>
         <input id="badgeName" type="text" placeholder="Badge Name">
         <button id="assignBadgeBtn">Assign Badge</button>
       </div>
-      <!-- PollResultsViewer -->
       <div class="section" id="pollResultsViewer">
         <h3>PollResultsViewer</h3>
         <input id="pollOption" type="number" placeholder="Option Number">
         <input id="pollCount" type="number" placeholder="Vote Count">
         <button id="updatePollResultBtn">Update Result</button>
       </div>
-      <!-- EventReminder -->
       <div class="section" id="eventReminder">
         <h3>EventReminder</h3>
         <input id="reminderName" type="text" placeholder="Event Name">
         <input id="reminderTimestamp" type="number" placeholder="Timestamp">
         <button id="setReminderBtn">Set Reminder</button>
       </div>
-      <!-- FeedbackCollector -->
       <div class="section" id="feedbackCollector">
         <h3>FeedbackCollector</h3>
         <input id="feedbackMessage" type="text" placeholder="Feedback">
@@ -278,6 +262,7 @@
     connectBtn.addEventListener("click", async () => {
       try {
         await appKit.open();
+        statusDiv.textContent = "Opening WalletConnect modal...";
       } catch (err) {
         statusDiv.textContent = `Connection failed: ${err.message}`;
         console.error(err);
