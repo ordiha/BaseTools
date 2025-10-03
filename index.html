@@ -2,154 +2,181 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>BaseTools — WalletConnect Ready</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BaseTools - WalletConnect Builder Rewards</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 0; }
-    header { background: #0052ff; color: #fff; padding: 1rem; text-align: center; }
-    h1 { margin: 0; font-size: 1.5rem; }
-    #app { padding: 2rem; max-width: 900px; margin: auto; }
-    button { padding: 0.7rem 1.2rem; margin: 0.5rem 0; font-size: 1rem; border: none; border-radius: 6px; cursor: pointer; background: #0052ff; color: white; }
-    button:disabled { background: #ccc; cursor: not-allowed; }
-    .contract { background: #fff; padding: 1rem; margin: 1rem 0; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    .address { font-family: monospace; font-size: 0.9rem; color: #333; }
-    footer { text-align: center; padding: 1rem; font-size: 0.8rem; color: #777; }
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+      width: 100%;
+    }
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #4CAF50;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      margin: 5px;
+    }
+    .btn:hover { background: #45a049; }
+    input, select {
+      padding: 10px;
+      font-size: 14px;
+      margin: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .addr, .chain { font-size: 14px; margin: 5px; }
+    .card { margin: 10px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+    .status { font-size: 14px; color: #333; word-wrap: break-word; }
+    h1 { font-size: 24px; margin: 10px 0; }
+    h2 { font-size: 18px; margin: 10px 0 5px; }
+    .lead { font-size: 16px; color: #555; }
+    .foot { margin-top: 20px; text-align: center; }
   </style>
-  <!-- WalletConnect + Web3Modal scripts -->
-  <script src="https://unpkg.com/@walletconnect/ethereum-provider@2.11.1/dist/index.umd.js"></script>
-  <script src="https://unpkg.com/@web3modal/standalone@2.6.1/dist/index.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
+  <script src="https://unpkg.com/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
 </head>
 <body>
-  <header>
-    <h1>BaseTools — WalletConnect Ready</h1>
-  </header>
-
-  <div id="app">
-    <p><strong>Project ID:</strong> ab89fbce996fcfa27b2c5b16fb73632f</p>
-    <p><strong>Status:</strong> <span id="status">Not connected</span></p>
-    <button id="connectBtn">🔗 Connect Wallet</button>
-
-    <h2>Contracts</h2>
-
-    <div class="contract">
-      <h3>TipJar</h3>
-      <p class="address">0xc1EFbf01F45E2291930ca1b4cFEE7ba7cA2a0389</p>
-      <a target="_blank" href="https://basescan.org/address/0xc1efbf01f45e2291930ca1b4cfee7ba7ca2a0389#code">View on BaseScan</a>
-    </div>
-
-    <div class="contract">
-      <h3>VotePoll</h3>
-      <p class="address">0xE92Af969Eda2739d3892bD331912924203914649</p>
-      <a target="_blank" href="https://basescan.org/address/0xe92af969eda2739d3892bd331912924203914649#code">View on BaseScan</a>
-    </div>
-
-    <div class="contract">
-      <h3>SimpleTimer</h3>
-      <p class="address">0xC17803c254831208B8a9c352a1B9e1b0c5d8e0e3</p>
-      <a target="_blank" href="https://basescan.org/address/0xc17803c254831208b8a9c352a1b9e1b0c5d8e0e3#code">View on BaseScan</a>
-    </div>
-
-    <div class="contract">
-      <h3>GiveawayBox</h3>
-      <p class="address">0x4Ed8afadBFb646be20B250574c5b088Aeed70E1c</p>
-      <a target="_blank" href="https://basescan.org/address/0x4ed8afadbfb646be20b250574c5b088aeed70e1c#code">View on BaseScan</a>
-    </div>
-
-    <div class="contract">
-      <h3>StorageUnit</h3>
-      <p class="address">0xbB5f6aB56147c3644A481FDC21196ca4A2EEe60D</p>
-      <a target="_blank" href="https://basescan.org/address/0xbb5f6ab56147c3644a481fdc21196ca4a2eee60d#code">View on BaseScan</a>
-    </div>
-
-    <div class="contract">
-      <h3>RandomPicker</h3>
-      <p class="address">0x9aDF3D4233A75cc330909aDC9b1A60bFC1567567</p>
-      <a target="_blank" href="https://basescan.org/address/0x9adf3d4233a75cc330909adc9b1a60bfc1567567#code">View on BaseScan</a>
-    </div>
-
-    <div class="contract">
-      <h3>GreetingCard</h3>
-      <p class="address">0xa27C3d38BCd9738eecA4f44E7259f1Ad9E605387</p>
-      <a target="_blank" href="https://basescan.org/address/0xa27c3d38bcd9738eeca4f44e7259f1ad9e605387#code">View on BaseScan</a>
-    </div>
-
-    <div class="contract">
-      <h3>TokenTracker</h3>
-      <p class="address">0xF717E1c9fca1d3BD1823907eF120dc7a619445a1</p>
-      <a target="_blank" href="https://basescan.org/address/0xf717e1c9fca1d3bd1823907ef120dc7a619445a1#code">View on BaseScan</a>
-    </div>
-
-    <div class="contract">
-      <h3>EventTracker</h3>
-      <p class="address">0x70205809e4a0153A1a7fE165F24f83d32bd5DB3b</p>
-      <a target="_blank" href="https://basescan.org/address/0x70205809e4a0153a1a7fe165f24f83d32bd5db3b#code">View on BaseScan</a>
-    </div>
-
-    <div class="contract">
-      <h3>PriceChecker</h3>
-      <p class="address">0x27c8D16d8Eba789eDB777A983e307D726bEC56fA</p>
-      <a target="_blank" href="https://basescan.org/address/0x27c8d16d8eba789edb777a983e307d726bec56fa#code">View on BaseScan</a>
-    </div>
-
-    <div class="contract">
-      <h3>TodoList</h3>
-      <p class="address">0xD080Ebc9b6207A5B6607690E5A98aA81A0F7774a</p>
-      <a target="_blank" href="https://basescan.org/address/0xd080ebc9b6207a5b6607690e5a98aa81a0f7774a#code">View on BaseScan</a>
-    </div>
-
-    <div class="contract">
-      <h3>Scoreboard</h3>
-      <p class="address">0x3749c8E42c7D7A2E856Ab2272bd5DD0dCD530036</p>
-      <a target="_blank" href="https://basescan.org/address/0x3749c8e42c7d7a2e856ab2272bd5dd0dcd530036#code">View on BaseScan</a>
-    </div>
-
-    <div class="contract">
-      <h3>ProfileBadge</h3>
-      <p class="address">0xE22fAEdE533f9b2d321B36f9a6CaAe91404A83ff</p>
-      <a target="_blank" href="https://basescan.org/address/0xe22faede533f9b2d321b36f9a6caae91404a83ff#code">View on BaseScan</a>
-    </div>
-
-    <div class="contract">
-      <h3>PollResultsViewer</h3>
-      <p class="address">0x5C0774903cD49e8a145E2A3900965cb4684C1C7C</p>
-      <a target="_blank" href="https://basescan.org/address/0x5c0774903cd49e8a145e2a3900965cb4684c1c7c#code">View on BaseScan</a>
-    </div>
-
-    <div class="contract">
-      <h3>EventReminder</h3>
-      <p class="address">0x707d306210a414cfd63edcfe0fa11f2b37823b3e</p>
-      <a target="_blank" href="https://basescan.org/address/0x707d306210a414cfd63edcfe0fa11f2b37823b3e#code">View on BaseScan</a>
-    </div>
-
-    <div class="contract">
-      <h3>FeedbackCollector</h3>
-      <p class="address">0x57541598FD78DC06B9aDF135467fCDD103643262</p>
-      <a target="_blank" href="https://basescan.org/address/0x57541598fd78dc06b9adf135467fcdd103643262#code">View on BaseScan</a>
-    </div>
+  <div class="container">
+    <header class="top">
+      <h1>🛠 BaseTools: Utility Contracts</h1>
+      <p class="lead">Connect via WalletConnect or MetaMask to interact with Base contracts.</p>
+      <div class="connect-row">
+        <button id="btnConnect" class="btn">🔗 Connect Wallet</button>
+        <div id="addr" class="addr">Not connected</div>
+        <div id="chain" class="chain"></div>
+      </div>
+    </header>
+    <main class="grid" id="cards">
+      <!-- Contract cards injected dynamically -->
+    </main>
+    <footer class="foot">
+      <div>Repo: <code>BaseTools</code></div>
+      <div id="txLog" class="txlog"></div>
+    </footer>
   </div>
-
-  <footer>
-    BaseTools • WalletConnect v2 integration • Base chain 8453
-  </footer>
-
   <script>
-    const projectId = "ab89fbce996fcfa27b2c5b16fb73632f";
-    const provider = window.WalletConnectEthereumProvider.default({
-      projectId,
-      chains: [8453]
-    });
-    const connectBtn = document.getElementById("connectBtn");
-    const statusEl = document.getElementById("status");
+    let web3;
+    let accounts;
+    let provider;
 
-    connectBtn.addEventListener("click", async () => {
+    const contracts = [
+      { name: "TipJar", address: "0xc1EFbf01F45E2291930ca1b4cFEE7ba7cA2a0389", method: "tip", type: "eth", inputId: "tipAmount" },
+      { name: "VotePoll", address: "0xE92Af969Eda2739d3892bD331912924203914649", method: "vote", type: "number", inputId: "voteOption" },
+      { name: "SimpleTimer", address: "0xC17803c254831208B8a9c352a1B9e1b0c5d8e0e3", method: "startTimer", type: "none", inputId: "" },
+      { name: "GiveawayBox", address: "0x4Ed8afadBFb646be20B250574c5b088Aeed70E1c", method: "enter", type: "none", inputId: "" },
+      { name: "StorageUnit", address: "0xbB5f6aB56147c3644A481FDC21196ca4A2EEe60D", method: "store", type: "number", inputId: "storeValue" },
+      { name: "RandomPicker", address: "0x9aDF3D4233A75cc330909aDC9b1A60bFC1567567", method: "enter", type: "none", inputId: "" },
+      { name: "GreetingCard", address: "0xa27C3d38BCd9738eecA4f44E7259f1Ad9E605387", method: "setGreeting", type: "string", inputId: "greetingMessage" },
+      { name: "TokenTracker", address: "0xF717E1c9fca1d3BD1823907eF120dc7a619445a1", method: "updateBalance", type: "number", inputId: "tokenAmount" },
+      { name: "EventTracker", address: "0x70205809e4a0153A1a7fE165F24f83d32bd5DB3b", method: "logEvent", type: "string", inputId: "eventName" },
+      { name: "PriceChecker", address: "0x27c8D16d8Eba789eDB777A983e307D726bEC56fA", method: "updatePrice", type: "number", inputId: "priceValue" },
+      { name: "TodoList", address: "0xD080Ebc9b6207A5B6607690E5A98aA81A0F7774a", method: "addTask", type: "string", inputId: "taskDescription" },
+      { name: "Scoreboard", address: "0x3749c8E42c7D7A2E856Ab2272bd5DD0dCD530036", method: "updateScore", type: "number", inputId: "scoreValue" },
+      { name: "ProfileBadge", address: "0xE22fAEdE533f9b2d321B36f9a6CaAe91404A83ff", method: "assignBadge", type: "string", inputId: "badgeName" },
+      { name: "PollResultsViewer", address: "0x5C0774903cD49e8a145E2A3900965cb4684C1C7C", method: "updateResult", type: "number", inputId: ["pollOption", "pollCount"] },
+      { name: "EventReminder", address: "0x707d306210a414cFD63EdcFe0fA11f2b37823b3e", method: "setReminder", type: "string", inputId: ["reminderName", "reminderTimestamp"] },
+      { name: "FeedbackCollector", address: "0x57541598FD78DC06B9aDF135467fCDD103643262", method: "submitFeedback", type: "string", inputId: "feedbackMessage" }
+    ];
+
+    const cardsContainer = document.getElementById("cards");
+    contracts.forEach(c => {
+      const card = document.createElement("section");
+      card.className = "card";
+      card.innerHTML = `
+        <h2>🛠 ${c.name}</h2>
+        ${c.type !== "none" ? (Array.isArray(c.inputId) ? c.inputId.map(id => `<input id="${id}" placeholder="Enter ${id.replace(c.name.toLowerCase(), '').replace(/([A-Z])/g, ' $1').trim()}"/>`).join('') : `<input id="${c.inputId}" placeholder="${c.type === 'eth' ? 'ETH amount' : 'Enter text/number'}"/>`) : ""}
+        <button id="btn_${c.name}">Call ${c.method}()</button>
+        <div class="status" id="status_${c.name}"></div>
+      `;
+      cardsContainer.appendChild(card);
+    });
+
+    document.getElementById("btnConnect").addEventListener("click", async () => {
       try {
+        if (window.ethereum) {
+          provider = window.ethereum;
+          await provider.request({ method: "eth_requestAccounts" });
+          web3 = new Web3(provider);
+          accounts = await web3.eth.getAccounts();
+          showWallet(accounts[0]);
+          return;
+        }
+        const WalletConnectProvider = window.WalletConnectProvider.default;
+        provider = new WalletConnectProvider({ infuraId: "5056a2b581e5962f9e3083d68053b5d8" });
         await provider.enable();
-        const accounts = await provider.request({ method: "eth_accounts" });
-        statusEl.textContent = "Connected: " + accounts[0];
+        web3 = new Web3(provider);
+        accounts = await web3.eth.getAccounts();
+        showWallet(accounts[0]);
       } catch (err) {
-        statusEl.textContent = "Connection failed";
         console.error(err);
+        document.getElementById("txLog").innerText = `Failed to connect: ${err.message}`;
       }
+    });
+
+    function showWallet(addr) {
+      document.getElementById("addr").innerText = addr;
+      document.getElementById("chain").innerText = "Connected to Base";
+    }
+
+    contracts.forEach(c => {
+      document.getElementById(`btn_${c.name}`).addEventListener("click", async () => {
+        try {
+          const input = c.type !== "none" ? (Array.isArray(c.inputId) ? c.inputId.map(id => document.getElementById(id).value) : document.getElementById(c.inputId).value) : null;
+          const abi = [{
+            "inputs": c.type === "none" ? [] : (Array.isArray(c.inputId) ? c.inputId.map((_, i) => ({
+              internalType: c.type === "string" ? "string" : "uint256",
+              name: `_param${i + 1}`,
+              type: c.type === "string" ? "string" : "uint256"
+            })) : [{
+              internalType: c.type === "string" ? "string" : c.type === "eth" ? "uint256" : "uint256",
+              name: "_param",
+              type: c.type === "string" ? "string" : c.type === "eth" ? "uint256" : "uint256"
+            }]),
+            "name": c.method,
+            "outputs": [],
+            "stateMutability": c.type === "eth" ? "payable" : "nonpayable",
+            "type": "function"
+          }];
+          const contract = new web3.eth.Contract(abi, c.address);
+          let tx;
+          if (c.type === "eth") {
+            tx = await contract.methods[c.method]().send({ from: accounts[0], value: web3.utils.toWei(input, "ether") });
+          } else if (c.type === "none") {
+            tx = await contract.methods[c.method]().send({ from: accounts[0] });
+          } else if (c.type === "string") {
+            tx = await contract.methods[c.method](input).send({ from: accounts[0] });
+          } else if (c.type === "number") {
+            tx = await contract.methods[c.method](...[input].map(v => v)).send({ from: accounts[0] });
+          } else if (Array.isArray(c.inputId)) {
+            tx = await contract.methods[c.method](...input).send({ from: accounts[0] });
+          }
+          document.getElementById(`status_${c.name}`).innerText = `Tx: ${tx.transactionHash}`;
+          document.getElementById("txLog").innerText = `Tx sent: ${tx.transactionHash}`;
+        } catch (e) {
+          console.error(e);
+          document.getElementById(`status_${c.name}`).innerText = `Error: ${e.message}`;
+          document.getElementById("txLog").innerText = `Error: ${e.message}`;
+        }
+      });
     });
   </script>
 </body>
